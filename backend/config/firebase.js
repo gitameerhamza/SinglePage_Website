@@ -12,8 +12,20 @@ const initializeFirebase = () => {
     }
 
     try {
-        // Service Account Key Path
-        const serviceAccount = require('../serviceAccountKey.json');
+        // Check if service account key exists
+        let serviceAccount;
+        try {
+            serviceAccount = require('../serviceAccountKey.json');
+        } catch (error) {
+            console.error('❌ Firebase service account key not found!');
+            console.log('📝 Please follow these steps to set up Firebase:');
+            console.log('1. Go to Firebase Console: https://console.firebase.google.com/');
+            console.log('2. Select your project > Project Settings > Service Accounts');
+            console.log('3. Click "Generate new private key" and download the JSON file');
+            console.log('4. Rename it to "serviceAccountKey.json" and place in backend/ folder');
+            console.log('5. Create .env file from .env.example and add your Firebase config');
+            throw new Error('Firebase service account key missing');
+        }
 
         admin.initializeApp({
             credential: admin.credential.cert(serviceAccount),
